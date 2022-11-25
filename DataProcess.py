@@ -53,4 +53,10 @@ def getQuery(file_path,N):
             query = Query(x[0].qid,x)
             res.append(query)
     return res
-q = getQuery("U:\\data.txt",10)
+# q = getQuery("U:\\data.txt",10)
+# a = q[0]
+# print(f"qid = {a.qid}")
+# docs = a.documents
+# # for doc in docs:
+# #     print(doc.label)
+# print(a.G_max())

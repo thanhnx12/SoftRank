@@ -8,17 +8,21 @@ class Model(torch.nn.Module):
 
     def __init__(self):
         super(Model, self).__init__()
-        self.layer1 = torch.nn.Linear(136, 1)
-
+        self.layer1 = torch.nn.Linear(136,1)
+        self.layer2 = torch.nn.Sigmoid()
     def forward(self, x):
         x = self.layer1(x)
+        x = self.layer2(x)
         return x
 model = Model()
 model.layer1.weight.requires_grad = True
 #readData
 q = DataProcess.getQuery("U:\\MSLR-WEB10K\Fold1\\test.txt",10)
+#q = DataProcess.getQuery("U:\\data.txt",10)
 datasize = len(q)
-for i in range(datasize):
+#print(datasize) #22379
+acc = []
+for i in range(1000):
     #model predictions
     ds_dw = []
     score = []
@@ -35,6 +39,9 @@ for i in range(datasize):
     # gradient
     PI = q[i].claculate_pi()
     P = q[i].prob_all(PI)
+    # print("------------------------")
+    # print(P)
+    # print("----------------------")
     dG_ds = q[i].G_derivative_by_score(PI,P)
     dG_ds = torch.from_numpy(np.array(dG_ds))
     ds_dw = torch.cat(ds_dw)
@@ -42,6 +49,9 @@ for i in range(datasize):
     #Training
     with torch.no_grad():
         model.layer1.weight += LR*grad
-    print(q[i].SoftNDCG(P))
+    softndcg = q[i].SoftNDCG(P)
+    acc.append(softndcg)
 
 print(model.layer1.weight)
+res = np.array(acc)
+print(f"Mean of SoftNDCG = {res.mean()*100} %")

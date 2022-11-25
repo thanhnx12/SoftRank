@@ -127,9 +127,11 @@ class Query:
             gj = 2**self.documents[j].label
             temp = 0
             for r in range(N):
-                temp += P[j][N-1][r]*math.log2(r+2)
+                temp += P[j][N-1][r]/math.log2(r+2)
+            #print(f"g[{j}] = {gj},  D[{j}] = {temp}")
             gj *= temp
             result += gj
+        result /= self.G_max()
         return result
 
 
