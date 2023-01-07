@@ -133,6 +133,15 @@ class Query:
             result += gj
         result /= self.G_max()
         return result
+    def NDCG(self):
+        sorted_document = [x for _, x in sorted(zip(self.score,self.documents),key= lambda x : x[0])]
+        result = 0
+        r = 0
+        for x in sorted_document:
+            result += 2**x.label/math.log2(r+2)
+            r += 1
+        result /= self.G_max()
+        return result
 
 
 
